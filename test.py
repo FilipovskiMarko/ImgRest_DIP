@@ -104,7 +104,7 @@ train_loss = list(); nrmse_list = list(); best_nrmse = 10e9
 
 print("Starting training")
 
-for epoch in range(100 + 1):
+for epoch in range(10000 + 1):
     optimizer.zero_grad()
     output_image = cnn(input_image)
 
@@ -131,9 +131,13 @@ for epoch in range(100 + 1):
         axs1[0, 0].plot(nrmse_list[-200:-1]); axs1[0,0].set_title('NRMSE (%%), epoch %d' %epoch);
         axs1[0, 0].legend(['ERROR wrt DATA','Error wrt TRUE']);
 
-        fig1.canvas.draw()
-        fig1.canvas.flush_events()
-        plt.pause(0.05)
+        # fig1.canvas.draw()
+        # fig1.canvas.flush_events()
+        # plt.pause(1)
 
 
-    print("Epoch:", epoch)
+
+    #print("Epoch:", epoch)
+plt.imsave("output.png", torch_to_np(output_image), cmap='Greys_r')
+
+    #Not updating plt for some reason, stupid shit
