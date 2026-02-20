@@ -202,8 +202,9 @@ def multiscale_detections(img):
     return diff
 
 
-
-img_path = "OldPhoto_1.jpeg"
+name = "Old_Photo_color_1"
+format = ".jpeg"
+img_path = "Inputs/" + name + format
 
 img, gray = load_and_preprocess(img_path)
 
@@ -229,8 +230,8 @@ cv2.imshow("Original", img)
 cv2.imshow("mask", cleaned)
 cv2.imshow("restored", result)
 
-cv2.imwrite("test_result.png", gray)
-cv2.imwrite("test_result_mask.png", cleaned)
+cv2.imwrite("Outputs/" + name + "_test_result.png", result)
+cv2.imwrite("Outputs/" + name + "_test_result_mask.png", cleaned)
 
 
 cv2.waitKey(0)
