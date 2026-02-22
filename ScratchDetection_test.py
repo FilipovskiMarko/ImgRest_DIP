@@ -127,7 +127,7 @@ def detect_scratches_hough(img, edges, min_line_length=50, max_line_gap=10):
 
     return result, scratch_count
 
-def detect_scratches_contour(img, edges, min_area = 50, max_area=10000):
+def detect_scratches_contour(img, edges, min_area = 20, max_area=50000):
     """
 
     :param img:
@@ -141,32 +141,29 @@ def detect_scratches_contour(img, edges, min_area = 50, max_area=10000):
 
     output = np.zeros_like(img)
 
-    cv2.drawContours(output, contours, -1, (255, 255, 255), -1)
+    # cv2.drawContours(output, contours, -1, (255, 255, 255), -1)
+    # return output
+
+    scratch_contours = []
+
+    for contour in contours:
+        area = cv2.contourArea(contour)
+
+        if min_area < area < max_area:
+            # Aspect Ratio
+            x, y, w, h = cv2.boundingRect(contour)
+            # aspect_ratio = max(w,h) / min(w,h)
+            # aspect ratio can help with finding longer straight scratches as they will have a higher A.R.
+
+            scratch_contours.append(contour)
+
+            # Draw bounding box
+            #cv2.rectangle(result, (x, y), (x + w, y + h), (0, 255, 0), 2)
+
+            # Draw contour
+            cv2.drawContours(output, [contour], -1, (255, 255, 255), -1)
 
     return output
-
-    # result = img.copy()
-    # scratch_contours = []
-    #
-    # for contour in contours:
-    #     area = cv2.contourArea(contour)
-    #
-    #     if min_area < area < max_area:
-    #         # Aspect Ratio
-    #         x, y, w, h = cv2.boundingRect(contour)
-    #         aspect_ratio = max(w,h) / min(w,h)
-    #
-    #         if aspect_ratio > 3:
-    #
-    #             scratch_contours.append(contour)
-    #
-    #             # Draw bounding box
-    #             cv2.rectangle(result, (x, y), (x + w, y + h), (0, 255, 0), 2)
-    #
-    #             # Draw contour
-    #             cv2.drawContours(result, [contour], -1, (0, 0, 255), 2)
-    #
-    # return result, scratch_contours
 
 def detect_scratches_adaptive(img, block_size=11, C=2):
     """
@@ -219,7 +216,7 @@ _, mask = cv2.threshold(mask, 30,255, cv2.THRESH_BINARY)
 
 # Clean and fill in scratches
 cleaned = morphological_operations(mask, 3, operation="close")
-cleaned = detect_scratches_contour(gray, cleaned)
+cleaned = detect_scratches_contour(gray, cleaned, min_area=1)
 cleaned = morphological_operations(cleaned, 3, operation="dilate")
 cleaned = morphological_operations(cleaned, 3, operation="dilate")
 
@@ -230,8 +227,8 @@ cv2.imshow("Original", img)
 cv2.imshow("mask", cleaned)
 cv2.imshow("restored", result)
 
-cv2.imwrite("Outputs/" + name + "_test_result.png", result)
-cv2.imwrite("Outputs/" + name + "_test_result_mask.png", cleaned)
+#cv2.imwrite("Outputs/" + name + "_test_result.png", result)
+#cv2.imwrite("Outputs/" + name + "_test_result_mask.png", cleaned)
 
 
 cv2.waitKey(0)
