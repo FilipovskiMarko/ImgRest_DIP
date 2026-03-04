@@ -6,7 +6,7 @@ Computationally expensive to recreate the whole image from scratch, so better to
 
 ```bash
 
-python ScratchDetection_test.py -i [PATH-TO-IMAGE] -o [OUTPUT-FOLDER] -m [MODE]
+python ScratchDetection.py -i [PATH-TO-IMAGE] -o [OUTPUT-FOLDER] -m [MODE]
 
 
 ```

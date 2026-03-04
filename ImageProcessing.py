@@ -3,8 +3,6 @@ import argparse
 from pathlib import Path
 import cv2
 
-
-
 # Parse Part
 parser = argparse.ArgumentParser()
 parser.add_argument("-i", "--input",type=Path, required=True, help="Input image")
