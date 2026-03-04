@@ -24,33 +24,27 @@ mode = str(args.mode).lower()
 # Processing Part
 img, gray = load_and_preprocess(img_path)
 
-if mode == "l":
-    denoised = denoise(gray, method="gaussian")
-    mask = morphological_operations(denoised, kernel_size=9,operation="tophat")
-    _, mask = cv2.threshold(mask,20,255, cv2.THRESH_BINARY)
-    mask, count = detect_scratches_hough(mask)
-    mask = morphological_operations(mask,3,operation="dilate")
-
-elif mode == "m":
-    mask = multiscale_mask(gray,method="gaussian")
-
-elif mode == "t":
-    denoised = denoise(gray,method="gaussian")
-    mask = tophat_mask(denoised)
+if mode == "d":
+    result = denoise_bm3d(img, color=True)
+elif mode == "s":
+    blurred = cv2.GaussianBlur(img, (0, 0), 3)
+    sharp_amnt = 1.5
+    sub_weight = -0.5
+    result = cv2.addWeighted(img,sharp_amnt,blurred,sub_weight,0)
 else:
     raise ValueError("Unknown mode")
 
 # inpaint with cv
 # result = cv2.inpaint(img,mask,3,cv2.INPAINT_TELEA)
 
-# cv2.imshow("Original", img)
-# cv2.imshow("mask", mask)
+cv2.imshow("Original", img)
+cv2.imshow("Result", result)
 # cv2.imshow("result", result)
 
 # cv2.imwrite("Mask/" + name + "_result.png", result)
-cv2.imwrite(output_path + name + "_mask.png", mask)
+# cv2.imwrite(output_path + name + "_mask.png", mask)
 # cv2.imwrite("Mask/" + name + ".png", img)
 
 
-# cv2.waitKey(0)
-# cv2.destroyAllWindows()
+cv2.waitKey(0)
+cv2.destroyAllWindows()

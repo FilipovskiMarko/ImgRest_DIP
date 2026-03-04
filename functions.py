@@ -1,0 +1,262 @@
+import cv2
+import numpy as np
+import bm3d
+
+def load_and_preprocess(image_path):
+
+    img = cv2.imread(image_path)
+    if img is None:
+        raise IOError("Unable to load image")
+
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+    return img, gray
+
+def denoise(gray, method="gaussian"):
+    """
+    remove noise while preserving edges
+
+    gray: grayscale input image
+    method: gaussian,bilateral,median
+    """
+
+    if method == "gaussian":
+        denoised = cv2.GaussianBlur(gray, (5, 5), 0)
+    elif method == "bilateral":
+        denoised = cv2.bilateralFilter(gray, 9, 75, 75)
+    elif method == "median":
+        denoised = cv2.medianBlur(gray, 5)
+
+    return denoised
+
+def denoise_bm3d(img, color=False, sigma=0.04):
+    if not color:
+        img_float = img.astype(np.float64) / 255.0
+        denoised = bm3d.bm3d(img_float, sigma_psd=sigma)
+        result = (denoised * 255).astype(np.uint8)
+    elif color:
+        lab = cv2.cvtColor(img, cv2.COLOR_BGR2LAB)
+        L, A, B = cv2.split(lab)
+
+        L_float = L.astype(np.float64) / 255.0
+        L_denoised = bm3d.bm3d(L_float, sigma_psd=sigma)
+        L_denoised = (L_denoised * 255).astype(np.uint8)
+
+        lab_denoised = cv2.merge([L_denoised, A, B])
+        result = cv2.cvtColor(lab_denoised, cv2.COLOR_LAB2BGR)
+
+
+    return result
+
+def edge_detection(image, method="canny"):
+
+    if method == "canny":
+        edges = cv2.Canny(image, 50, 150)
+    elif method == "sobel":
+        sobelx = cv2.Sobel(image, cv2.CV_64F, 1, 0, ksize=3)
+        sobely = cv2.Sobel(image, cv2.CV_64F, 0, 1, ksize=3)
+        edges = np.sqrt(sobelx**2 + sobely**2)
+        edges = np.uint8(edges/edges.max() * 255)
+    elif method == "laplacian":
+        laplacian = cv2.Laplacian(image, cv2.CV_64F)
+        edges = np.uint8(np.absolute(laplacian))
+    elif method == "scharr":
+        # More accurate than sobel
+        scharrx = cv2.Scharr(image, cv2.CV_64F, 1, 0)
+        scharry = cv2.Scharr(image, cv2.CV_64F, 0, 1)
+        edges = np.sqrt(scharrx**2 + scharry**2)
+        edges = np.uint8(edges/edges.max()*255)
+
+    return edges
+
+def high_pass(img, blurred):
+    """
+
+    :param img: Greyscale image
+    :param blurred: image blurred
+    :return: subtracted image
+    """
+
+    result = cv2.subtract(img, blurred)
+
+    return detect_scratches_adaptive(result)
+
+def morphological_operations(edges, kernel_size=3, operation="close"):
+
+    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (kernel_size, kernel_size))
+
+    if operation == "close":
+        # Close gaps in scratches
+        result = cv2.morphologyEx(edges, cv2.MORPH_CLOSE, kernel)
+    elif operation == "open":
+        # Remove small noise
+        result = cv2.morphologyEx(edges, cv2.MORPH_OPEN, kernel)
+    elif operation == "dilate":
+        result = cv2.dilate(edges, kernel,iterations=1)
+    elif operation == "erode":
+        result = cv2.erode(edges, kernel,iterations=1)
+    elif operation == "tophat":
+        kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (kernel_size, kernel_size))
+        result = cv2.morphologyEx(edges, cv2.MORPH_TOPHAT, kernel)
+
+    #TODO blackhat operation for pictures with black defects
+
+
+    return result
+
+def detect_scratches_hough(edges, min_line_length=50, max_line_gap=10):
+    """
+    Args
+    :param img: input image
+    :param edges: edge detected binary image
+    :param min_line_length: minimum line length to detect
+    :param max_line_gap: max gap between line segments
+    """
+
+    lines = cv2.HoughLinesP(
+        edges,
+        rho=1,
+        theta=np.pi/180,
+        threshold=50,
+        minLineLength=min_line_length,
+        maxLineGap=max_line_gap
+    )
+
+    # Draw the lines
+
+    result = np.zeros_like(edges)
+    scratch_count = 0
+
+    if lines is None:
+        return result, scratch_count
+
+    for line in lines:
+        x1, y1, x2, y2 = line[0]
+
+        length = np.sqrt((x2-x1)**2 + (y2-y1)**2)
+        angle = np.abs(np.arctan2(y2-y1, x2-x1) * 180 / np.pi)
+
+        # Filter by angle and length
+        ####
+
+        if length > min_line_length:
+            cv2.line(result, (x1, y1), (x2, y2), (255, 255, 255), 1)
+            scratch_count += 1
+
+    return result, scratch_count
+
+def detect_scratches_contour(edges, min_area = 20, max_area=50000):
+    """
+
+    :param edges:
+    :param min_area:
+    :param max_area:
+    :return:
+    """
+
+    contours, hierarchy = cv2.findContours(edges,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
+
+    output = np.zeros_like(edges)
+
+    # cv2.drawContours(output, contours, -1, (255, 255, 255), -1)
+    # return output
+
+    scratch_contours = []
+
+    for contour in contours:
+        area = cv2.contourArea(contour)
+
+        if min_area < area < max_area:
+            # Aspect Ratio
+            x, y, w, h = cv2.boundingRect(contour)
+            # aspect_ratio = max(w,h) / min(w,h)
+            # aspect ratio can help with finding longer straight scratches as they will have a higher A.R.
+
+            scratch_contours.append(contour)
+
+            # Draw bounding box
+            #cv2.rectangle(result, (x, y), (x + w, y + h), (0, 255, 0), 2)
+
+            # Draw contour
+            cv2.drawContours(output, [contour], -1, (255, 255, 255), -1)
+
+    return output
+
+def detect_scratches_adaptive(img, block_size=11, C=2):
+    """
+
+    :param img: Grayscale image
+    :param block_size:
+    :param C:
+    """
+
+    binary = cv2.adaptiveThreshold(img,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY_INV,block_size,C)
+
+    # Remove small noise
+    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
+    cleaned = cv2.morphologyEx(binary, cv2.MORPH_OPEN, kernel)
+
+    # Close gaps in scratches
+    kernel_close = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
+    result = cv2.morphologyEx(cleaned, cv2.MORPH_CLOSE, kernel_close)
+
+    return result
+
+def multiscale_detections(img):
+    """
+
+    :param img: greyscale image
+    :return:
+    """
+    minor_blur = cv2.GaussianBlur(img, (5, 5), 0)
+    major_blur = cv2.GaussianBlur(img, (25, 25), 0)
+
+    diff = cv2.absdiff(minor_blur, major_blur)
+
+    return diff
+
+def multiscale_detections_bm3d(img):
+    """
+
+    :param img: greyscale image
+    :return:
+    """
+    minor_blur = denoise_bm3d(img,False,0.025)
+    major_blur = denoise_bm3d(img,False,0.06)
+
+
+    diff = cv2.absdiff(minor_blur, major_blur)
+
+    return diff
+
+def multiscale_mask(gray, method="gaussian"):
+    if method == "gaussian":
+        # Great all around scratch detection
+        mask = multiscale_detections(gray)
+        _, mask = cv2.threshold(mask, 30, 255, cv2.THRESH_BINARY)
+
+        # Clean and fill in scratches
+        cleaned = morphological_operations(mask, 3, operation="close")
+        cleaned = detect_scratches_contour(cleaned, min_area=1)
+        cleaned = morphological_operations(cleaned, 3, operation="dilate")
+        cleaned = morphological_operations(cleaned, 3, operation="dilate")
+    elif method == "bm3d":
+        mask = multiscale_detections_bm3d(gray)
+        _, mask = cv2.threshold(mask, 30, 255, cv2.THRESH_BINARY)
+
+        cleaned = morphological_operations(mask, 3, operation="dilate")
+
+    return cleaned
+
+
+
+
+def tophat_mask(gray):
+    # Great for finding small white scratches
+    mask = morphological_operations(gray, kernel_size=9, operation="tophat")
+    _, mask = cv2.threshold(mask, 20, 255, cv2.THRESH_BINARY)
+
+    cleaned = detect_scratches_contour(mask, min_area=1, max_area=100)
+    cleaned = morphological_operations(cleaned, 3, operation="dilate")
+
+    return cleaned
