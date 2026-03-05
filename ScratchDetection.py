@@ -3,8 +3,6 @@ import argparse
 from pathlib import Path
 import cv2
 
-
-
 # Parse Part
 parser = argparse.ArgumentParser()
 parser.add_argument("-i", "--input",type=Path, required=True, help="Input image")
@@ -41,16 +39,16 @@ else:
     raise ValueError("Unknown mode")
 
 # inpaint with cv
-# result = cv2.inpaint(img,mask,3,cv2.INPAINT_TELEA)
+result = cv2.inpaint(img,mask,3,cv2.INPAINT_TELEA)
 
-# cv2.imshow("Original", img)
-# cv2.imshow("mask", mask)
-# cv2.imshow("result", result)
+cv2.imshow("Original", img)
+cv2.imshow("mask", mask)
+cv2.imshow("result", result)
 
 # cv2.imwrite("Mask/" + name + "_result.png", result)
 cv2.imwrite(output_path + name + "_mask.png", mask)
 # cv2.imwrite("Mask/" + name + ".png", img)
 
 
-# cv2.waitKey(0)
-# cv2.destroyAllWindows()
+cv2.waitKey(0)
+cv2.destroyAllWindows()

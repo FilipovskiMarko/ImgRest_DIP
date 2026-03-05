@@ -23,7 +23,7 @@ mode = str(args.mode).lower()
 img, gray = load_and_preprocess(img_path)
 
 if mode == "d":
-    result = denoise_bm3d(img, color=True)
+    result = denoise_bm3d(img, color=True, sigma=0.02)
 elif mode == "s":
     blurred = cv2.GaussianBlur(img, (0, 0), 3)
     sharp_amnt = 1.5
@@ -39,9 +39,9 @@ cv2.imshow("Original", img)
 cv2.imshow("Result", result)
 # cv2.imshow("result", result)
 
-# cv2.imwrite("Mask/" + name + "_result.png", result)
-# cv2.imwrite(output_path + name + "_mask.png", mask)
-# cv2.imwrite("Mask/" + name + ".png", img)
+
+cv2.imwrite(output_path + name + "_result.png", result)
+
 
 
 cv2.waitKey(0)

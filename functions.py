@@ -238,8 +238,8 @@ def multiscale_mask(gray, method="gaussian"):
         # Clean and fill in scratches
         cleaned = morphological_operations(mask, 3, operation="close")
         cleaned = detect_scratches_contour(cleaned, min_area=1)
-        cleaned = morphological_operations(cleaned, 3, operation="dilate")
-        cleaned = morphological_operations(cleaned, 3, operation="dilate")
+        cleaned = morphological_operations(cleaned, 5, operation="dilate")
+        cleaned = morphological_operations(cleaned, 5, operation="dilate")
     elif method == "bm3d":
         mask = multiscale_detections_bm3d(gray)
         _, mask = cv2.threshold(mask, 30, 255, cv2.THRESH_BINARY)
