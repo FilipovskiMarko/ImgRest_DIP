@@ -1,3 +1,7 @@
+A collective of python tools for image sharpening, denoising and mask generation, created with OpenCV and BM3D, used in pair with LaMa for advanced inpainting, CodeFormer for face restoration and DDColor for color restoration
+
+The goal of this project was to use free tools to restore old photographs that have faded colors/physical damage
+
 ScratchDetection.py script to detect scratches using OpenCV operations
 
 - Usage:
@@ -37,9 +41,13 @@ python ImageProcessing.py -i [PATH-TO-IMAGE] -o [OUTPUT-FOLDER] -m [MODE]
   - `s` = applies sharpening to the image 
 ```
 
+Results:
+(All images are sourced from r/TheWayWeWere)
+Original Image:
+<img width="1895" height="2272" alt="OldPhoto_1" src="https://github.com/user-attachments/assets/784dcf51-0496-4538-bb10-94d770af09a0" />
+
+Mask (using multiscale detections):
+<img width="1895" height="2272" alt="OldPhoto_1_mask" src="https://github.com/user-attachments/assets/d8d31da9-45a2-4aab-916c-1c42f33b58fc" />
 
 
-test.py Deep Image Processing with torch CNN's,
-made following this tutorial -> https://www.youtube.com/watch?v=FPzi8cUhNNY
-Computationally expensive to recreate the whole image from scratch, so better to use inpainting
 
