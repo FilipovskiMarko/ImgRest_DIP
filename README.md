@@ -68,5 +68,33 @@ DDColor:
 
 
 
+Original Image:
+<img width="1230" height="876" alt="9" src="https://github.com/user-attachments/assets/98ff1de1-0767-49de-b30f-b5b88549e4b4" />
+
+Mask (TopHat):
+<img width="1230" height="876" alt="9_mask" src="https://github.com/user-attachments/assets/213ac827-04de-435f-8c52-453d21cc1d3b" />
+
+
+LaMa:
+<img width="1230" height="876" alt="9_lama" src="https://github.com/user-attachments/assets/4954ed48-ad93-43b1-8a28-b6cbeddf5961" />
+
+
+CodeFormer:
+<img width="2460" height="1752" alt="9_codeformer" src="https://github.com/user-attachments/assets/a00fddbd-db92-4a7d-a69c-31b81d01e04d" />
+
+
+DDColor:
+<img width="2460" height="1752" alt="9_ddcolor" src="https://github.com/user-attachments/assets/4b6a3235-68d4-4c3d-8efe-2a6bbe551775" />
+
+
+
+
+
+
+
+
+
+
+
 
 
