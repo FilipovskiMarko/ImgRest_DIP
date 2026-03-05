@@ -46,7 +46,7 @@ Results:
 
 Original Image, Mask (using multiscale detections) & LaMa:
 <p>
-<img width="1320" height="1604" alt="OldPhoto_2" src="https://github.com/user-attachments/assets/fc2d8b93-b2e6-4f1e-8a54-609e3b25a488", width=45% />
+<alt="OldPhoto_2" src="https://github.com/user-attachments/assets/fc2d8b93-b2e6-4f1e-8a54-609e3b25a488", width=45% />
 
 
 
