@@ -40,52 +40,65 @@ python ImageProcessing.py -i [PATH-TO-IMAGE] -o [OUTPUT-FOLDER] -m [MODE]
   - `d` = denoise, uses bm3d to denoise an image
   - `s` = applies sharpening to the image 
 ```
+-------------------------------------------------------------------------
+<b>Results:</b>
+<i>(All images are sourced from r/TheWayWeWere)</i>
 
-Results:
-(All images are sourced from r/TheWayWeWere)
-
-Original Image:  
+- Original Image:  
 <img width="1320" height="1604" alt="OldPhoto_2" src="https://github.com/user-attachments/assets/9121928d-e372-40fe-809d-ca4d3bde8671" />
 
 
 
-Mask (using multiscale detections):
+- Mask (using multiscale detections):
 <img width="1320" height="1604" alt="OldPhoto_2_mask" src="https://github.com/user-attachments/assets/70abb7b3-d84a-48eb-8c0f-e3e7db8e7db5" />
 
 
-LaMa:
+- LaMa:
 <img width="1320" height="1604" alt="OldPhoto_2_lama" src="https://github.com/user-attachments/assets/180570e1-fdeb-46a8-878d-7029cd4c73e9" />
 
 
 
-CodeFormer:
+- CodeFormer:
 ![Old_Photo_2_codeformer](https://github.com/user-attachments/assets/cd341623-c742-47e2-acac-6dc875c1e95a)
 
-DDColor:
+- DDColor:
 ![Old_Photo_2_ddcolor](https://github.com/user-attachments/assets/ae596b43-a9ca-4ab2-9bfe-ae5f147cc340)
 
 
 
 
 
-Original Image:
+- Original Image:
 <img width="1230" height="876" alt="9" src="https://github.com/user-attachments/assets/98ff1de1-0767-49de-b30f-b5b88549e4b4" />
 
-Mask (TopHat):
+- Mask (TopHat):
 <img width="1230" height="876" alt="9_mask" src="https://github.com/user-attachments/assets/213ac827-04de-435f-8c52-453d21cc1d3b" />
 
 
-LaMa:
+- LaMa:
 <img width="1230" height="876" alt="9_lama" src="https://github.com/user-attachments/assets/4954ed48-ad93-43b1-8a28-b6cbeddf5961" />
 
 
-CodeFormer:
+- CodeFormer:
 <img width="2460" height="1752" alt="9_codeformer" src="https://github.com/user-attachments/assets/a00fddbd-db92-4a7d-a69c-31b81d01e04d" />
 
 
-DDColor:
+- DDColor:
 <img width="2460" height="1752" alt="9_ddcolor" src="https://github.com/user-attachments/assets/4b6a3235-68d4-4c3d-8efe-2a6bbe551775" />
 
+
+------------------------------------------------------------------
+Now for the image processing script:
+
+
+- Original Image:
+
+<img width="640" height="809" alt="2" src="https://github.com/user-attachments/assets/371a7b7d-9767-4fda-9489-c578adf48392" />
+
+
+- Denoised(BM3D):
+
+<img width="640" height="809" alt="2_result" src="https://github.com/user-attachments/assets/8ee3eab8-fcff-4384-b139-89535ded95f5" />
 
 
 
