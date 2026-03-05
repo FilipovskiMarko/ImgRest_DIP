@@ -43,11 +43,20 @@ python ImageProcessing.py -i [PATH-TO-IMAGE] -o [OUTPUT-FOLDER] -m [MODE]
 
 Results:
 (All images are sourced from r/TheWayWeWere)
+
 Original Image:
 <img width="1895" height="2272" alt="OldPhoto_1" src="https://github.com/user-attachments/assets/784dcf51-0496-4538-bb10-94d770af09a0" />
 
 Mask (using multiscale detections):
 <img width="1895" height="2272" alt="OldPhoto_1_mask" src="https://github.com/user-attachments/assets/d8d31da9-45a2-4aab-916c-1c42f33b58fc" />
+
+LaMa:
+<img width="1895" height="2272" alt="OldPhoto_1_lama" src="https://github.com/user-attachments/assets/6d9cdc41-6515-4a79-8918-d5594b20e4bb" />
+
+CodeFormer:
+![OldPhoto_1_codeformer](https://github.com/user-attachments/assets/16d343c0-23e3-488d-84ff-290295052abc)
+
+
 
 
 
