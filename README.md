@@ -16,9 +16,9 @@ python ScratchDetection.py -i [PATH-TO-IMAGE] -o [OUTPUT-FOLDER] -m [MODE]
 - `-i, --input`   Input image path
 - `-o, --output`  Output image path
 - `-m, --mode`    Processing mode:
-  - `l` = lines
-  - `t` = tophat
-  - `m` = multiscale detection
+  - `l` = find straight lines using hough line transform, useful for images with linear defects
+  - `t` = use tophat filtering to find defects and then only keep those with an area smaller than a certain threshold, usefull for small noise
+  - `m` = multiscale detection, good for general purpose mask generation
 ```
 
 
