@@ -1,9 +1,5 @@
 ScratchDetection.py script to detect scratches using OpenCV operations
 
-test.py Deep Image Processing with torch CNN's,
-made following this tutorial -> https://www.youtube.com/watch?v=FPzi8cUhNNY
-Computationally expensive to recreate the whole image from scratch, so better to use inpainting
-
 - Usage:
 ```bash
 
@@ -21,4 +17,25 @@ python ScratchDetection.py -i [PATH-TO-IMAGE] -o [OUTPUT-FOLDER] -m [MODE]
   - `m` = multiscale detection, good for general purpose mask generation
 ```
 
+ImageProcessing.py script for image processing using OpenCV and BM3D operations
+
+- Usage:
+```bash
+
+python ImageProcessing.py -i [PATH-TO-IMAGE] -o [OUTPUT-FOLDER] -m [MODE]
+
+```
+- Arguments:
+```md
+
+- `-i, --input`   Input image path
+- `-o, --output`  Output image path
+- `-m, --mode`    Processing mode:
+  - `d` = denoise, uses bm3d to denoise an image
+  - `s` = applies sharpening to the image 
+```
+
+test.py Deep Image Processing with torch CNN's,
+made following this tutorial -> https://www.youtube.com/watch?v=FPzi8cUhNNY
+Computationally expensive to recreate the whole image from scratch, so better to use inpainting
 
