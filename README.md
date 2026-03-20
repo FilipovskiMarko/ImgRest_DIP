@@ -101,6 +101,14 @@ Now for the image processing script:
 <img width="640" height="809" alt="2_result" src="https://github.com/user-attachments/assets/8ee3eab8-fcff-4384-b139-89535ded95f5" />
 
 
+----------------------------------------------------------------------
+
+Future Plans:
+
+- Adding a Bayes Joint Estimator for noise removeal
+- Histogram equalization option
+
+
 
 
 
